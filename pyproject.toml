@@ -1,12 +1,17 @@
 [tool.poetry]
 name = "rtspware"
 version = "0.1.0"
-description = ""
+description = "Tools for working with RTSP stream."
 authors = ["ryzhovalex <thed4rkof@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
+opencv-python = "^4.8.0.76"
+pydantic = "^2.3.0"
+
+[tool.poetry.scripts]
+rtspware = "rtspware.__main__:main"
 
 [build-system]
 requires = ["poetry-core"]
