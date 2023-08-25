@@ -10,10 +10,6 @@ class VideoSaver:
         # https://superuser.com/a/921385
         cmdargs: list[str] = [
             "openRTSP",
-            # quit if no packets for 1 second or more
-            "-D 1",
-            # continuously record, after completion of -d timeframe
-            "-c",
             # input buffer of 10 MB
             "-B 10000000",
             # output buffer 10MB (to file)

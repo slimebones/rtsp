@@ -6,7 +6,7 @@ from rtspware.saver import VideoSaver
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--creds", type=str, dest="creds")
+    parser.add_argument("--creds", type=str, dest="creds", required=True)
 
     namespace = parser.parse_args()
 
