@@ -11,7 +11,7 @@ pip install rtspware
 
 ### Save a video from stream
 
-You need to install [openRTSP](http://www.live555.com/openRTSP/), for examplei
+You need to install [openRTSP](http://www.live555.com/openRTSP/), for example
 for Arch Linux it is available under `live-media` library:
 ```bash
 sudo pacman -S live-media
@@ -25,7 +25,7 @@ openRTSP --help
 Basic call to save a video from RTSP stream to current directory with default
 configuration:
 ```bash
-rtspware --creds "<username> <password>" <hello>
+rtspware <url> --creds "<username> <password>"
 ```
 
 This will save incoming RTSP stream into mp4 files, with creating a new file
