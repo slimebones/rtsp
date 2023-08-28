@@ -4,6 +4,7 @@ from rtspware.subprocessutils import SubprocessUtils
 class VideoSaver:
     async def save(
         self,
+        url: str,
         username: str,
         password: str
     ) -> None:
@@ -27,7 +28,7 @@ class VideoSaver:
             # frame rate set to 30
             "-f 30",
             # camera's RTSP URL
-            "rtsp://192.168.1.61:9220/main",
+            url
         ]
 
         await SubprocessUtils.call(" ".join(cmdargs))
