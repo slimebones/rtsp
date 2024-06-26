@@ -40,7 +40,7 @@ def save_frame(url: str, out: Path, period: float):
     while cap.isOpened():
         ret, frame = cap.read()
         if ret and time.time() - last_process_time > period:
-            log.info(f"({datetime.now().strftime("%H:%M:%S")}) save img to {out}")
+            log.info(f"({datetime.now().strftime('%H:%M:%S')}) save img to {out}")
             last_process_time = time.time()
             Image.fromarray(frame, "RGB").save(out)
         if cv2.waitKey(20) & 0xFF == ord("q"):
@@ -54,7 +54,7 @@ def show_window_frame(url: str, period: float):
     while cap.isOpened():
         ret, frame = cap.read()
         if ret and time.time() - last_process_time > period:
-            log.info(f"({datetime.now().strftime("%H:%M:%S")}) show frame")
+            log.info(f"({datetime.now().strftime('%H:%M:%S')}) show frame")
             last_process_time = time.time()
             cv2.imshow("frame", frame)
         if cv2.waitKey(20) & 0xFF == ord("q"):
@@ -69,7 +69,7 @@ def show_console_frame(url: str, period: float):
         ret, frame = cap.read()
         if ret and time.time() - last_process_time > period:
             log.info(
-                f"({time.strftime("%H:%M:%S", time.gmtime())}) show frame")
+                f"({time.strftime('%H:%M:%S', time.gmtime())}) show frame")
             last_process_time = time.time()
             img = Image.fromarray(frame, "RGB")
             console_out = climage.convert_pil(img, is_unicode=True)
