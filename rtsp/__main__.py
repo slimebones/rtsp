@@ -1,4 +1,5 @@
 import argparse
+import sys
 import climage
 import asyncio
 from datetime import datetime
@@ -7,6 +8,8 @@ import time
 from PIL import Image
 
 import cv2
+from loguru import logger
+from pykit.log import log
 from pykit.res import Res
 
 from rtsp.saver import VideoSaver
@@ -31,7 +34,7 @@ def save_frame(url: str, out: Path, period: float):
     while cap.isOpened():
         ret, frame = cap.read()
         if ret:
-            print(f"({datetime.now().strftime("%H:%M:%S")}) save img to {out}")
+            log.info(f"({datetime.now().strftime("%H:%M:%S")}) save img to {out}")
             Image.fromarray(frame, "RGB").save(out)
         if cv2.waitKey(20) & 0xFF == ord("q"):
             break
@@ -45,7 +48,7 @@ def show_window_frame(url: str, period: float):
     while cap.isOpened():
         ret, frame = cap.read()
         if ret:
-            print(f"({datetime.now().strftime("%H:%M:%S")}) show frame")
+            log.info(f"({datetime.now().strftime("%H:%M:%S")}) show frame")
             cv2.imshow("frame", frame)
         if cv2.waitKey(20) & 0xFF == ord("q"):
             break
@@ -59,15 +62,15 @@ def show_console_frame(url: str, period: float):
     last_process_time = 0.0
     while cap.isOpened():
         ret, frame = cap.read()
-        if ret and time.time() - last_process_time:
-            print(f"({datetime.now().strftime("%H:%M:%S")}) show frame")
+        if ret and time.time() - last_process_time > period:
+            log.info(
+                f"({time.strftime("%H:%M:%S", time.gmtime())}) show frame")
+            last_process_time = time.time()
             img = Image.fromarray(frame, "RGB")
             console_out = climage.convert_pil(img, is_unicode=True)
             print(console_out)
         if cv2.waitKey(20) & 0xFF == ord("q"):
             break
-        if period > 0.0:
-            time.sleep(period)
     cap.release()
 
 def _add_save_parsers(parser: argparse.ArgumentParser):
@@ -103,7 +106,16 @@ def _add_show_parsers(parser: argparse.ArgumentParser):
         "-p --period", type=float, dest="period", default=1.0)
 
 async def main():
+    logger.remove(0)
+    logger.add(
+        sys.stderr,
+        format="{message}",
+        colorize=True,
+        level="DEBUG")
+
     parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-v", action="store_true", dest="verbosity", default=False)
     action_subparsers = parser.add_subparsers(dest="action", required=True, )
 
     save_action_parser = action_subparsers.add_parser("save")
@@ -112,6 +124,7 @@ async def main():
     _add_show_parsers(show_action_parser)
 
     args = parser.parse_args()
+    log.std_verbosity = 1 if args.verbosity else 0
 
     match args.action:
         case "save":
