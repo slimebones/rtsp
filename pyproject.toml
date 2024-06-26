@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "rtsp"
-version = "0.1.1"
+version = "0.2.0"
 description = "Tools for working with RTSP stream."
 authors = ["ryzhovalex <thed4rkof@gmail.com>"]
 readme = "README.md"

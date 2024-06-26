@@ -1,3 +1,8 @@
+"""
+For most methods, we have to read VideoCapture constantly, but take an action
+with the frame only in certain periods of time. So we use last_process_time
+variable with conditions.
+"""
 import argparse
 import sys
 import climage
@@ -31,29 +36,29 @@ SHOW_ACTION = [
 
 def save_frame(url: str, out: Path, period: float):
     cap = cv2.VideoCapture(url)
+    last_process_time = 0.0
     while cap.isOpened():
         ret, frame = cap.read()
-        if ret:
+        if ret and time.time() - last_process_time > period:
             log.info(f"({datetime.now().strftime("%H:%M:%S")}) save img to {out}")
+            last_process_time = time.time()
             Image.fromarray(frame, "RGB").save(out)
         if cv2.waitKey(20) & 0xFF == ord("q"):
             break
-        if period > 0.0:
-            time.sleep(period)
     cap.release()
     cv2.destroyAllWindows()
 
 def show_window_frame(url: str, period: float):
     cap = cv2.VideoCapture(url)
+    last_process_time = 0.0
     while cap.isOpened():
         ret, frame = cap.read()
-        if ret:
+        if ret and time.time() - last_process_time > period:
             log.info(f"({datetime.now().strftime("%H:%M:%S")}) show frame")
+            last_process_time = time.time()
             cv2.imshow("frame", frame)
         if cv2.waitKey(20) & 0xFF == ord("q"):
             break
-        if period > 0.0:
-            time.sleep(period)
     cap.release()
     cv2.destroyAllWindows()
 
