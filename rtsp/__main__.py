@@ -54,20 +54,20 @@ def show_window_frame(url: str, period: float):
     cap.release()
     cv2.destroyAllWindows()
 
-async def show_console_frame(url: str, period: float):
-    reader = ContiniousVideoReader(url)
-    reader.start()
-    if period < 0.0:
-        period = 0.0
-    while reader.is_opened():
-        frame = reader.flush_frame().unwrap_or(None)
-        if frame is not None:
+def show_console_frame(url: str, period: float):
+    cap = cv2.VideoCapture(url)
+    while cap.isOpened():
+        ret, frame = cap.read()
+        if ret:
             print(f"({datetime.now().strftime("%H:%M:%S")}) show frame")
             img = Image.fromarray(frame, "RGB")
             console_out = climage.convert_pil(img, is_unicode=True)
             print(console_out)
-        # sleep in any case to give space in event loop
-        await asyncio.sleep(period)
+        if cv2.waitKey(20) & 0xFF == ord("q"):
+            break
+        if period > 0.0:
+            time.sleep(period)
+    cap.release()
 
 def _add_save_parsers(parser: argparse.ArgumentParser):
     subparser = parser.add_subparsers(dest="save_action")
