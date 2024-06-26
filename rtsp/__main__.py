@@ -56,9 +56,10 @@ def show_window_frame(url: str, period: float):
 
 def show_console_frame(url: str, period: float):
     cap = cv2.VideoCapture(url)
+    last_process_time = 0.0
     while cap.isOpened():
         ret, frame = cap.read()
-        if ret:
+        if ret and time.time() - last_process_time:
             print(f"({datetime.now().strftime("%H:%M:%S")}) show frame")
             img = Image.fromarray(frame, "RGB")
             console_out = climage.convert_pil(img, is_unicode=True)
@@ -126,7 +127,7 @@ async def main():
                 case "window":
                     show_window_frame(args.url, args.period)
                 case "console":
-                    await show_console_frame(args.url, args.period)
+                    show_console_frame(args.url, args.period)
 
 if __name__ == "__main__":
     asyncio.run(main())
