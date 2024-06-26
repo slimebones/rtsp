@@ -10,6 +10,8 @@ python = "^3.11"
 pydantic = "^2.3.0"
 opencv-python = "^4.10.0.84"
 pillow = "^10.3.0"
+climage = "^0.2.0"
+pykit = {git = "https://github.com/slimebones/pykit.git", rev = "0.7.1"}
 
 [tool.poetry.scripts]
 rtsp = "rtsp.__main__:main"
