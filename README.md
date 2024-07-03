@@ -1,32 +1,33 @@
-# RTSPWare
+# rtsp
 
-Some helper tools around RTSP protocol.
+Tools to work with RTSP streams.
 
 ## Installation
 
-For all methods, firstly install the project via PIP:
+You may need `poetry`:
 ```bash
-pip install rtspware
-```
-
-### Save a video from stream
-
-You need to install [openRTSP](http://www.live555.com/openRTSP/), for example
-for Arch Linux it is available under `live-media` library:
-```bash
-sudo pacman -S live-media
-openRTSP --help
+poetry install
 ```
 
 ## Usage
 
-### Save a video from stream
-
-Basic call to save a video from RTSP stream to current directory with default
-configuration:
 ```bash
-rtspware <url> --creds "<username> <password>"
+poetry run python -m rtsp <command>
 ```
 
-This will save incoming RTSP stream into mp4 files, with creating a new file
-each hour.
+Save a video (legacy, soon to be changed):
+```bash
+poetry run python -m rtsp save video <url> --creds <username>:<password>
+```
+videos are saved to the current working directory.
+
+Save a frame:
+```bash
+poetry run python -m rtsp save frame <url> -o <out_path> -p <delay>
+```
+overwrites frame image at path (soon to be added to collect images).
+
+Show low-res image to console:
+```bash
+poetry run python -m rtsp show console <url> -p <delay>
+```
