@@ -16,6 +16,12 @@ pykit = {git = "https://github.com/slimebones/pykit.git", rev = "0.7.1"}
 [tool.poetry.scripts]
 rtsp = "rtsp.__main__:main"
 
+[tool.poetry.group.dev.dependencies]
+coverage = "^7.5.4"
+ruff = "^0.5.1"
+pytest = "^8.2.2"
+pytest-asyncio = "^0.23.7"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

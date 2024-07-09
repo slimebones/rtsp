@@ -17,7 +17,7 @@ from loguru import logger
 from pykit.log import log
 from pykit.res import Res
 
-from rtsp.saver import VideoSaver
+from rtsp.subprocess_ext import SubprocessUtils
 
 RUN_ACTIONS = [
     "save",
@@ -33,6 +33,31 @@ SHOW_ACTION = [
     "window",
     "console"
 ]
+
+async def _save_video(url: str, username: str, password: str, rotation: str):
+    # https://superuser.com/a/921385
+    cmdargs: list[str] = [
+        "openRTSP",
+        # input buffer of 10 MB
+        "-B 10000000",
+        # output buffer 10MB (to file)
+        "-b 10000000",
+        # produce files in mp4 format
+        "-4",
+        # prefix output filenames with this text
+        "-F main",
+        # period to start a new output file
+        "-P 3600",
+        # request camera end stream over TCP, not UDP
+        "-t",
+        # username and password expected by camera
+        f"-u {username} {password}",
+        # frame rate set to 30
+        "-f 30",
+        # camera's RTSP URL
+        url
+    ]
+    await SubprocessUtils.call(" ".join(cmdargs))
 
 def save_frame(url: str, out: Path, period: float):
     cap = cv2.VideoCapture(url)
@@ -89,6 +114,15 @@ def _add_save_parsers(parser: argparse.ArgumentParser):
         dest="creds",
         required=True,
         help="creds in format <username>:<password>")
+    video.add_argument(
+        "--rotation",
+        type=str,
+        dest="rotation",
+        default="inf",
+        help=
+            "how often to delete accumulated data. For now only MB"
+            " measurement is supported, e.g. \"10MB\". \"inf\" means"
+            " no rotation is made")
 
     frame = subparser.add_parser("frame")
     frame.add_argument("url", type=str)
@@ -137,7 +171,8 @@ async def main():
                 case "video":
                     url = args.url
                     username, password = args.creds.split(":")
-                    await VideoSaver().save(url, username, password)
+                    rotation = args.rotation
+                    await _save_video(url, username, password, rotation)
                 case "frame":
                     save_frame(args.url, args.out, args.period)
         case "show":
